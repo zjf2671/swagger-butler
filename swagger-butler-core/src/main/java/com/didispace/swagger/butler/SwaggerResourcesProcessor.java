@@ -8,6 +8,7 @@ import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SwaggerResourcesProcessor implements SwaggerResourcesProvider {
 
@@ -20,7 +21,12 @@ public class SwaggerResourcesProcessor implements SwaggerResourcesProvider {
     @Override
     public List<SwaggerResource> get() {
         List<SwaggerResource> resources = new ArrayList<>();
-
+        SwaggerResourceProperties defaultResource = swaggerButlerConfig.getResources().get("default");
+        if(defaultResource != null){
+            resources.add(swaggerResource(defaultResource.getName(),
+                    defaultResource.getApiDocsPath()!=null ? defaultResource.getApiDocsPath():swaggerButlerConfig.getApiDocsPath(),
+                    defaultResource.getSwaggerVersion()!=null ? defaultResource.getSwaggerVersion():swaggerButlerConfig.getSwaggerVersion()));
+        }
         List<Route> routes = routeLocator.getRoutes();
         for (Route route : routes) {
             String routeName = route.getId();
